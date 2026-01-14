@@ -1,8 +1,5 @@
 {
   "name": "Nguyễn Du - Truyện Kiều: Đại Thi Hào Dân Tộc",
   "description": "An interactive 50-slide presentation exploring the life of Nguyễn Du and his masterpiece Truyện Kiều, focusing on humanitarian and humanistic values in feudal society.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone"
-  ]
+  "requestFramePermissions": []
 }
