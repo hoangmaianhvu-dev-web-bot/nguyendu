@@ -5,21 +5,16 @@ import { ChatMessage } from "../types.ts";
 const SYSTEM_INSTRUCTION = `Bạn là một học giả uyên bác về văn học Việt Nam, mang trong mình tinh thần "Nhân" (Nhân đạo - Nhân văn) của Đại thi hào Nguyễn Du. 
 
 Định hướng tư tưởng cốt lõi của bạn:
-1. CHỮ NHÂN & CHỮ TÂM: Luôn đặt giá trị con người, lòng trắc ẩn và sự thấu cảm lên hàng đầu trong mọi lời giải thích.
-2. THẤU CẢM VỚI THÂN PHẬN: Khi phân tích về các nhân vật như Thúy Kiều, hãy nhìn nhận họ dưới góc độ nạn nhân của xã hội bất công, đề cao vẻ đẹp tâm hồn bất khuất của họ.
-3. CHIỀU SÂU VĂN HÓA: Kết nối các câu hỏi của người dùng với bối cảnh lịch sử cuối thế kỷ 18, đầu thế kỷ 19 để làm nổi bật tiếng kêu cứu cho quyền sống của con người.
-4. NGÔN NGỮ: Sử dụng lối nói thanh tao, giàu hình ảnh, mang âm hưởng của văn chương cổ điển nhưng vẫn dễ hiểu với người hiện đại.
+1. CHỮ NHÂN & CHỮ TÂM: Luôn đặt giá trị con người, lòng trắc ẩn và sự thấu cảm lên hàng đầu.
+2. THẤU CẢM: Phân tích nhân vật dưới góc độ nạn nhân xã hội, đề cao phẩm giá con người.
+3. CHIỀU SÂU: Kết nối văn chương với lịch sử thế kỷ XVIII-XIX.
+4. NGÔN NGỮ: Thanh tao, lịch sự, đúng mực một nhà nho học hiện đại.
 
-Nếu người dùng hỏi về một slide cụ thể trong bài thuyết trình 50 slide này, hãy cung cấp thêm bối cảnh lịch sử, ý nghĩa nghệ thuật hoặc triết lý nhân sinh tương ứng, tập trung vào việc Nguyễn Du đã dùng "lòng thương người" để viết nên tác phẩm như thế nào.`;
+Lưu ý: Nếu không thể trả lời do chính sách an toàn, hãy giải thích nhẹ nhàng rằng nội dung này cần được tiếp cận dưới góc độ nghiên cứu văn học thuần túy.`;
 
 export async function getGeminiResponse(history: ChatMessage[], prompt: string): Promise<string> {
-  const apiKey = typeof process !== 'undefined' ? process.env.API_KEY : '';
-  if (!apiKey) {
-    console.warn("API Key is missing. Gemini Assistant will not function.");
-    return "Tính năng trợ lý hiện không khả dụng do thiếu cấu hình API Key.";
-  }
-
-  const ai = new GoogleGenAI({ apiKey });
+  // Đảm bảo sử dụng process.env.API_KEY trực tiếp theo quy định
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   try {
     const response = await ai.models.generateContent({
@@ -33,12 +28,17 @@ export async function getGeminiResponse(history: ChatMessage[], prompt: string):
       ],
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
+        temperature: 0.7,
+        topP: 0.95,
       },
     });
 
-    return response.text || "Xin lỗi, tôi gặp trục trặc khi xử lý thông tin.";
-  } catch (error) {
+    return response.text || "Xin lỗi, tôi không thể tìm thấy câu trả lời phù hợp trong kho tàng văn học hiện tại.";
+  } catch (error: any) {
     console.error("Gemini API Error:", error);
-    return "Có lỗi xảy ra khi kết nối với máy chủ AI.";
+    if (error.message?.includes("safety")) {
+      return "Nội dung này bị chặn do bộ lọc an toàn. Vui lòng đặt câu hỏi khác tập trung vào giá trị nghệ thuật và nhân đạo của tác phẩm.";
+    }
+    return "Có lỗi xảy ra khi kết nối với trí tuệ nhân tạo. Vui lòng kiểm tra kết nối mạng hoặc thử lại sau.";
   }
 }
