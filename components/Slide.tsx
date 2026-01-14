@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SlideData } from '../types';
+import { SlideData } from '../types.ts';
+import { SLIDES } from '../constants.tsx';
 
 interface SlideProps {
   slide: SlideData;
@@ -19,7 +20,7 @@ const Slide: React.FC<SlideProps> = ({ slide, isActive }) => {
           transition={{ duration: 0.8 }}
           className="absolute inset-0 w-full h-full flex flex-col md:flex-row bg-[#242424]"
         >
-          {/* Visual Side (Left) - Enhanced with Parallax effect on entry */}
+          {/* Visual Side (Left) */}
           <motion.div 
             initial={{ scale: 1.15, opacity: 0, x: -30 }}
             animate={{ scale: 1, opacity: 1, x: 0 }}
@@ -32,16 +33,12 @@ const Slide: React.FC<SlideProps> = ({ slide, isActive }) => {
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover filter brightness-[0.7] contrast-[1.1] transition-transform duration-10000 ease-linear transform scale-105"
               onError={(e) => {
-                // Fallback nếu link ảnh bị lỗi hoặc bị chặn hotlinking
                 (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1512314889357-e157c22f938d?auto=format&fit=crop&q=80&w=1200";
               }}
             />
-            {/* Artistic Overlays */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#242424] hidden md:block"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-[#242424] to-transparent md:hidden"></div>
-            <div className="absolute inset-0 bg-black/10 mix-blend-overlay"></div>
             
-            {/* Giant Slide Number Accent */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 0.08, scale: 1 }}
@@ -56,7 +53,6 @@ const Slide: React.FC<SlideProps> = ({ slide, isActive }) => {
           <div className="w-full md:w-7/12 h-[65%] md:h-full flex items-center justify-center p-6 md:p-12 lg:p-20 bg-[#242424] overflow-y-auto custom-scrollbar relative">
             <div className="max-w-3xl w-full py-10">
               
-              {/* Category Indicator */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -69,7 +65,6 @@ const Slide: React.FC<SlideProps> = ({ slide, isActive }) => {
                 </span>
               </motion.div>
               
-              {/* Professional Title */}
               <motion.h2 
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -79,7 +74,6 @@ const Slide: React.FC<SlideProps> = ({ slide, isActive }) => {
                 {slide.title}
               </motion.h2>
 
-              {/* Detailed Points - Optimized for Reading and Note-taking */}
               <div className="space-y-6 md:space-y-8">
                 {slide.content.map((item, idx) => (
                   <motion.div 
@@ -97,7 +91,6 @@ const Slide: React.FC<SlideProps> = ({ slide, isActive }) => {
                 ))}
               </div>
 
-              {/* Decorative Canva Element */}
               <motion.div 
                 initial={{ scaleX: 0, opacity: 0 }}
                 animate={{ scaleX: 1, opacity: 1 }}
@@ -115,15 +108,12 @@ const Slide: React.FC<SlideProps> = ({ slide, isActive }) => {
                   <p className="text-[10px] uppercase tracking-[0.4em] text-white/80 font-bold mb-1">
                     BÁO CÁO CHUYÊN ĐỀ DI SẢN
                   </p>
-                  <p className="text-[9px] text-yellow-600 font-bold">DÂN TỘC VIỆT NAM • THẾ KỶ XVIII</p>
+                  <p className="text-[9px] text-yellow-600 font-bold">DÂN TỘC VIỆT NAM • THẾ KỶ XVIII-XIX</p>
                 </div>
-                <p className="text-[11px] font-mono font-black text-yellow-600 bg-yellow-600/10 px-3 py-1 rounded">TRANG {slide.id}/30</p>
+                <p className="text-[11px] font-mono font-black text-yellow-600 bg-yellow-600/10 px-3 py-1 rounded">TRANG {slide.id}/{SLIDES.length}</p>
               </motion.div>
             </div>
           </div>
-          
-          {/* Subtle Dynamic Light Layer */}
-          <div className="absolute inset-0 z-[-1] bg-[radial-gradient(circle_at_70%_30%,rgba(120,80,0,0.03),transparent_70%)] pointer-events-none"></div>
         </motion.div>
       )}
     </AnimatePresence>

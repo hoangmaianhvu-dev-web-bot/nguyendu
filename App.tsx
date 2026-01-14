@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { SLIDES } from './constants';
-import Slide from './components/Slide';
-import Assistant from './components/Assistant';
+import { SLIDES } from './constants.tsx';
+import Slide from './components/Slide.tsx';
+import Assistant from './components/Assistant.tsx';
 
 const App: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -30,14 +30,11 @@ const App: React.FC = () => {
     };
 
     const handleMouseClick = (e: MouseEvent) => {
-      // Button 0 = Chuột trái -> Next
       if (e.button === 0) {
         const target = e.target as HTMLElement;
-        // Tránh click vào assistant hoặc menu
         if (target.closest('button') || target.closest('input') || target.closest('.assistant-container')) return;
         nextSlide();
       }
-      // Button 2 = Chuột phải -> Prev
       if (e.button === 2) {
         e.preventDefault();
         prevSlide();
@@ -45,7 +42,7 @@ const App: React.FC = () => {
     };
 
     const handleContextMenu = (e: MouseEvent) => {
-      e.preventDefault(); // Luôn chặn menu chuột phải
+      e.preventDefault();
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -63,22 +60,20 @@ const App: React.FC = () => {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-[#242424] text-white selection:bg-yellow-500/30">
-      
-      {/* Texture Background */}
       <div className="absolute inset-0 z-[-1] pointer-events-none opacity-5 bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]"></div>
       
-      {/* Slide Container */}
       <main className="relative w-full h-full">
         {SLIDES.map((slide, index) => (
-          <Slide 
-            key={slide.id} 
-            slide={slide} 
-            isActive={index === currentIndex} 
-          />
+          index === currentIndex && (
+            <Slide 
+              key={slide.id} 
+              slide={slide} 
+              isActive={true} 
+            />
+          )
         ))}
       </main>
 
-      {/* Modern HUD Bar (Top Progress) */}
       <div className="fixed top-0 left-0 w-full h-[4px] bg-white/5 z-[60]">
         <div 
           className="h-full bg-yellow-500 shadow-[0_0_12px_rgba(202,138,4,0.8)] transition-all duration-700 ease-out" 
@@ -86,7 +81,6 @@ const App: React.FC = () => {
         />
       </div>
 
-      {/* Floating Header */}
       <header className="fixed top-0 left-0 w-full p-8 flex justify-between items-center z-50 pointer-events-none">
         <div className="flex items-center gap-6 pointer-events-auto bg-black/20 backdrop-blur-xl p-4 px-6 rounded-2xl border border-white/10">
           <div className="w-12 h-12 border-2 border-yellow-600/50 flex items-center justify-center font-serif-title text-2xl font-black text-yellow-500 bg-black/40">
@@ -94,7 +88,7 @@ const App: React.FC = () => {
           </div>
           <div className="border-l border-white/10 pl-6">
             <h1 className="text-[12px] font-black tracking-[0.4em] uppercase text-white drop-shadow-md">Nguyễn Du & Truyện Kiều</h1>
-            <p className="text-[10px] text-yellow-500 uppercase tracking-[0.2em] mt-1 font-bold">Chuyên Đề Di Sản Văn Chương</p>
+            <p className="text-[10px] text-yellow-500 uppercase tracking-[0.2em] mt-1 font-bold">50 Chương Mục Di Sản</p>
           </div>
         </div>
 
@@ -108,12 +102,11 @@ const App: React.FC = () => {
         </button>
       </header>
 
-      {/* Navigation Instruction HUD */}
       <footer className="fixed bottom-0 left-0 w-full p-10 flex justify-between items-end z-50 pointer-events-none">
         <div className="bg-black/30 backdrop-blur-xl p-4 px-6 border border-white/10 rounded-2xl pointer-events-auto">
           <div className="text-[24px] font-black font-serif-title flex items-baseline gap-2">
             <span className="text-white">{String(currentIndex + 1).padStart(2, '0')}</span>
-            <span className="text-yellow-600/40 text-sm">/ 30</span>
+            <span className="text-yellow-600/40 text-sm">/ {SLIDES.length}</span>
           </div>
         </div>
         
@@ -147,20 +140,19 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Menu Navigation Overlay */}
       {showToc && (
         <div className="fixed inset-0 z-[100] bg-black/98 backdrop-blur-3xl flex items-center justify-center p-10 lg:p-24 overflow-hidden">
           <div className="max-w-7xl w-full h-full flex flex-col">
-            <div className="flex justify-between items-center mb-16 border-b border-white/10 pb-10">
+            <div className="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
               <div>
-                <h2 className="text-6xl font-serif-title font-black text-yellow-500 italic">Mục Lục Di Sản</h2>
-                <p className="text-sm uppercase tracking-[0.5em] text-white/30 mt-3 font-bold">Lưu Trữ Chi Tiết 30 Chương Mục</p>
+                <h2 className="text-4xl md:text-6xl font-serif-title font-black text-yellow-500 italic">Mục Lục Di Sản</h2>
+                <p className="text-sm uppercase tracking-[0.5em] text-white/30 mt-3 font-bold">Lưu Trữ Chi Tiết {SLIDES.length} Chương Mục</p>
               </div>
               <button 
                 onClick={() => setShowToc(false)}
-                className="w-20 h-20 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all"
+                className="w-16 h-16 md:w-20 md:h-20 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 md:h-10 md:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -174,7 +166,7 @@ const App: React.FC = () => {
                     setCurrentIndex(idx);
                     setShowToc(false);
                   }}
-                  className={`group text-left p-6 rounded-2xl transition-all flex items-center gap-6 border-l-4 ${
+                  className={`group text-left p-4 rounded-xl transition-all flex items-center gap-4 border-l-4 ${
                     currentIndex === idx 
                       ? 'bg-yellow-600/10 border-yellow-500' 
                       : 'border-white/5 hover:border-yellow-500/50 hover:bg-white/5'
@@ -195,10 +187,7 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Literary Assistant */}
-      <div className="assistant-container">
-        <Assistant currentSlideTitle={SLIDES[currentIndex].title} />
-      </div>
+      <Assistant currentSlideTitle={SLIDES[currentIndex].title} />
     </div>
   );
 };

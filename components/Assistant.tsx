@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { getGeminiResponse } from '../services/geminiService';
-import { ChatMessage } from '../types';
+import { getGeminiResponse } from '../services/geminiService.ts';
+import { ChatMessage } from '../types.ts';
 
 interface AssistantProps {
   currentSlideTitle: string;
@@ -18,7 +18,7 @@ const Assistant: React.FC<AssistantProps> = ({ currentSlideTitle }) => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isOpen]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -41,11 +41,11 @@ const Assistant: React.FC<AssistantProps> = ({ currentSlideTitle }) => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      {/* Toggle Button */}
+    <div className="fixed bottom-6 right-6 z-50 assistant-container">
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className="bg-red-800 hover:bg-red-700 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110"
+        aria-label="Toggle Assistant"
       >
         {isOpen ? (
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -58,9 +58,8 @@ const Assistant: React.FC<AssistantProps> = ({ currentSlideTitle }) => {
         )}
       </button>
 
-      {/* Chat Window */}
       {isOpen && (
-        <div className="absolute bottom-16 right-0 w-80 md:w-96 h-[500px] bg-paper border border-yellow-800/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-900">
+        <div className="absolute bottom-16 right-0 w-80 md:w-96 h-[500px] bg-[#fdfaf2] border border-yellow-800/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-900">
           <div className="bg-red-900 p-4 text-white flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center text-red-900 font-bold">G</div>
             <div>
@@ -69,7 +68,7 @@ const Assistant: React.FC<AssistantProps> = ({ currentSlideTitle }) => {
             </div>
           </div>
 
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
             {messages.length === 0 && (
               <p className="text-sm text-gray-500 italic text-center mt-10">
                 Hãy hỏi tôi về nội dung của slide hiện tại hoặc bất cứ điều gì về cụ Nguyễn Du.
